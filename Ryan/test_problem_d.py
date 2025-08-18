@@ -80,7 +80,7 @@ def create_crossword(words: list) -> list:
             for letter_index, letter in enumerate(word):
                 current_row = start_row + row_direction * letter_index
                 current_col = start_col + col_direction * letter_index
-                grid[current_row][current_col] = letter
+                grid[current_row][current_col] = f'[{letter}]'
             placed = True
 
         # If word can't be placed
@@ -106,10 +106,26 @@ if __name__ == "__main__":
         
         # Generate the word search puzzle
         puzzle = create_crossword(words)
-        
-        # Print the result as a 2D grid
-        for row in puzzle:
-            print(''.join(row))
+
+        # Print the result as a 2D grid with row/col indices
+        # Print the result as a 2D grid with even spacing (handles [A] too)
+        size = len(puzzle)
+
+        # Determine a fixed width that fits all cells and headers
+        cell_w = max(3, max(len(cell) for row in puzzle for cell in row))  # at least 3 for "[A]"
+        head_w = max(cell_w, len(str(size - 1)))
+        row_label_w = max(2, len(str(size - 1)))
+
+        # Build column header line
+        header_cells = " ".join(f"{c:>{head_w}}" for c in range(size))
+        print(" " * (row_label_w + 1) + header_cells)
+        print(" " * (row_label_w + 1) + "-" * len(header_cells))
+
+        # Print each row with fixed-width cells
+        for r, row in enumerate(puzzle):
+            line = " ".join(f"{cell:^{cell_w}}" for cell in row)  # center each cell
+            print(f"{r:>{row_label_w}} {line}")
+
             
     except ValueError as e:
         print(f"Input Error: {e}", file=sys.stderr)
