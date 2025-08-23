@@ -26,10 +26,10 @@ def cake_calculator(flour: int, sugar: int) -> list:
    if flour < 0:
        raise ValueError("Flour must be a positive integer.")
 
-   # Calculate the maximum number of cakes
+   #calculate the maximum number of cakes
    max_cakes = min(flour // flourNeeded, sugar // sugarNeeded)
 
-   # Calculate leftover ingredients
+   #calculate leftover ingredients
    leftover_flour = flour - (max_cakes * flourNeeded)
    leftover_sugar = sugar - (max_cakes * sugarNeeded)
 

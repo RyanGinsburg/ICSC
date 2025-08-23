@@ -12,59 +12,59 @@ def create_crossword(words: list) -> list:
         A 2D array (list of lists) representing the word search puzzle.
     """
     # WRITE YOUR CODE HERE
-    SIZE = 10  # size of the grid (10x10)
+    SIZE = 10
 
-    # Normalize and validate words
+    #normalize and validate words
     cleaned_words = []
     seen = set()
     for word in words:
-        word = word.strip().upper()  # remove spaces around, convert to uppercase
-        if not word or word in seen:  # skip empty strings or duplicates
+        word = word.strip().upper()  #remove spaces around, convert to uppercase
+        if not word or word in seen:  #skip empty strings or duplicates
             continue
-        if len(word) > SIZE:  # reject words too long to fit in the grid
+        if len(word) > SIZE:  #reject words too long to fit in the grid
             raise ValueError(f"Word too long to fit in {SIZE}x{SIZE} grid: '{word}'")
-        cleaned_words.append(word)  # add cleaned word to the list
+        cleaned_words.append(word)  #add cleaned word to the list
         seen.add(word) 
 
-    # Place longer words first 
+    #place longer words first
     cleaned_words.sort(key=len, reverse=True)
 
-    # Create empty grid
+    #create empty grid
     grid = [[None for i in range(SIZE)] for j in range(SIZE)]
 
     directions = [
-        (0, 1),   # right →
-        (0, -1),  # left ←
-        (1, 0),   # down ↓
-        (-1, 0),  # up ↑
-        (1, 1),   # down-right ↘
-        (-1, -1), # up-left ↖
-        (1, -1),  # down-left ↙
-        (-1, 1)   # up-right ↗
+        (0, 1),   #right
+        (0, -1),  #left
+        (1, 0),   #down
+        (-1, 0),  #up
+        (1, 1),   #down-right
+        (-1, -1), #up-left
+        (1, -1),  #down-left
+        (-1, 1)   #up-right
     ]
 
     for word in cleaned_words:
         placed = False
         attempts = 0
-        max_attempts = 2000  # prevent infinite loops if a word can't be placed
+        max_attempts = 2000  #prevent infinite loops if a word can't be placed
         word_length = len(word)
 
         while not placed and attempts < max_attempts:
             attempts += 1
-            # Randomly pick a direction and a starting point
+            #randomly pick a direction and a starting point
             row_direction, col_direction = random.choice(directions)
             start_row = random.randint(0, SIZE - 1)
             start_col = random.randint(0, SIZE - 1)
 
-            # Calculate ending position based on chosen direction
+            #calculate ending position based on chosen direction
             end_row = start_row + row_direction * (word_length - 1)
             end_col = start_col + col_direction * (word_length - 1)
 
-            # Skip if the word would go out of bounds
+            #skip if the word would go out of bounds
             if not (0 <= end_row < SIZE and 0 <= end_col < SIZE):
                 continue
 
-            # Check if the word can fit
+            #check if the word can fit
             has_conflict = False
             for letter_index, letter in enumerate(word):
                 current_row = start_row + row_direction * letter_index
@@ -76,18 +76,18 @@ def create_crossword(words: list) -> list:
             if has_conflict:
                 continue
 
-            # Place the word
+            #place the word
             for letter_index, letter in enumerate(word):
                 current_row = start_row + row_direction * letter_index
                 current_col = start_col + col_direction * letter_index
                 grid[current_row][current_col] = letter
             placed = True
 
-        # If word can't be placed
+        #if word can't be placed
         if not placed:
             raise RuntimeError(f"Could not place word '{word}' after {max_attempts} attempts")
 
-    # Fill any empty spaces with random letters
+    #fill any empty spaces with random letters
     for i in range(SIZE):
         for j in range(SIZE):
             if grid[i][j] is None:
